@@ -1,0 +1,8 @@
+.cache
+.classpath
+.project
+activator
+activator-launch-1.2.12.jar
+activator.bat
+target
+project
