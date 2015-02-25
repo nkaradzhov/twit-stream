@@ -13,13 +13,9 @@ import scala.util.Failure
 
 object ApplicationMain extends App {
   val system = ActorSystem("MyActorSystem")
-
-
   val testActor = system.actorOf(Props[TestActor])
   
-  implicit val timeout = Timeout(2.seconds)
   import TestActor._
-
   testActor ! Start("iphone")
-
+  
 }
