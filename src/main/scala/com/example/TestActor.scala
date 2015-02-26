@@ -21,6 +21,7 @@ import spray.httpx.unmarshalling.Deserialized
 import com.example.domain.Tweet
 import spray.http.ChunkedMessageEnd
 import spray.httpx.unmarshalling.MalformedContent
+import akka.actor.Props
 
 class TestActor extends Actor with ActorLogging with TweetUnmarshaller with OAuthTwitterAuthorization {
   import TestActor._
@@ -28,6 +29,7 @@ class TestActor extends Actor with ActorLogging with TweetUnmarshaller with OAut
   val twitterUri = Uri("https://stream.twitter.com/1.1/statuses/filter.json")
 
   val io = IO(Http)(context.system)
+  val unmarshaller = context.system.actorOf(Props[UnmarshallerActor])
 
   def receive = {
     case Start(query: String)    => sendRequest(query)
@@ -40,8 +42,7 @@ class TestActor extends Actor with ActorLogging with TweetUnmarshaller with OAut
   }
   
   private def handleChunk1(data: HttpData) {
-    log.info(data.asString)
-    log.info(data.asString.endsWith("\r\n").toString)
+    unmarshaller ! data
   }
 
   private def handleChunk(data: HttpData) = {
